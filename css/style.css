@@ -316,10 +316,10 @@ body {
   display: none !important;
 }
 
-/* Netlify elements အကုန်လုံးကို အတင်း ဖျောက်ရန် */
+/* Hide all Netlify drawer and feedback elements */
 netlify-drawer,
 #netlify-drawer-root,
-[class*="netlify"],
+.netlify-drawer-frame,
 iframe[src*="netlify"] {
   display: none !important;
   visibility: hidden !important;
