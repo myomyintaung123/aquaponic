@@ -106,15 +106,21 @@ function toggleTheme() {
 
 // Supabase Stock Inventory Functions
 async function fetchStockStatus() {
-  const { data, error } = await supabaseClient
-    .from('inventory')
-    .select('*');
+  try {
+    const { data, error } = await supabaseClient
+      .from('inventory')
+      .select('*');
 
-  if (!error && data) {
-    stockStatus = {};
-    data.forEach(row => {
-      stockStatus[row.item_id] = row.is_available;
-    });
+    if (!error && data) {
+      stockStatus = {};
+      data.forEach(row => {
+        stockStatus[row.item_id] = row.is_available;
+      });
+    }
+  } catch (err) {
+    console.error("Failed to sync stock:", err);
+  } finally {
+    // Always render menu after fetch completes so phone gets fresh stock data
     renderMenu();
     renderAdminInventory();
   }
