@@ -40,7 +40,7 @@ const MENU_DATA = [
 
 // ================= SUPABASE INITIALIZATION =================
 const SUPABASE_URL = 'https://nrhtomcijqvymzbbzsid.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_EF5Y5lyow2T2qeriQYNxGw_LXzKE...'; // Publishable Key ထည့်ပါ
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yaHRvbWNpanF2eW16YmJ6c2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTY0OTYsImV4cCI6MjEwNTA3MjQ5Nn0.Ioqg3601HHG7c0nThsusRTF5ARy9aCnhaU7jSvFF6N0'; // Make sure your full anon key is set here
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -234,7 +234,7 @@ async function submitOrder() {
 
   if (error) {
     console.error('Supabase Error:', error);
-    alert('Order ပို့မရပါ။ အင်တာနက် လိုင်းစစ်ပေးပါ။');
+    alert('Error Detail: ' + error.message);
     return;
   }
 
@@ -314,7 +314,7 @@ function switchView(view) {
   }
 }
 
-// Supabase မှ Order များကို ရယူပြီး Admin UI တွင် ဖော်ပြခြင်း
+// Fetch Orders from Supabase and Render Admin UI
 async function fetchAndRenderAdminOrders() {
   const { data, error } = await supabaseClient
     .from('orders')
