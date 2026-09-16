@@ -9,8 +9,6 @@
 
   <!-- HTML to Image Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-
 </head>
 <body>
 
@@ -18,6 +16,11 @@
   <header class="app-header">
     <h1 class="brand-title" id="brand-logo" onclick="handleLogoClick()" style="cursor: pointer;">Singa-Ponics</h1>
     <div class="header-controls">
+      <!-- Notification Bell -->
+      <div class="notif-bell-container" onclick="toggleNotificationSlip()" style="position: relative; cursor: pointer; display: flex; align-items: center; padding: 4px;">
+        <span style="font-size: 1.2rem; pointer-events: none;">🔔</span>
+        <span id="notif-badge" class="notif-badge hidden">0</span>
+      </div>
       <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙</button>
       <button id="nav-customer" onclick="switchView('customer')" class="btn-nav hidden">Menu</button>
       <button id="nav-admin" onclick="switchView('admin')" class="btn-nav hidden">Admin (<span id="admin-count">0</span>)</button>
@@ -52,24 +55,30 @@
 
     <!-- Order Summary Slip Modal -->
     <div id="order-slip-modal" class="order-slip hidden">
-      <h3 style="color: var(--primary-color);">✓ Order Confirmed</h3>
-      <p id="slip-order-id" style="color: var(--text-muted); font-size: 0.85rem;"></p>
-      <p id="slip-customer-name" style="font-weight: bold; font-size: 0.9rem; margin-top: 4px;"></p>
-      
-      <div class="slip-box">
-        <h4>Order Summary:</h4>
-        <div id="slip-items"></div>
-        <div class="slip-row slip-total">
-          <span>Total:</span>
-          <span id="slip-total-price" style="color: var(--primary-color);">$0.00</span>
+      <div id="slip-content-to-capture" style="background: var(--bg-card); padding: 15px; border-radius: 12px;">
+        <h3 style="color: var(--primary-color);">✓ Order Confirmed</h3>
+        <p id="slip-order-id" style="color: var(--text-muted); font-size: 0.85rem;"></p>
+        <p id="slip-customer-name" style="font-weight: bold; font-size: 0.9rem; margin-top: 4px;"></p>
+        
+        <div class="slip-box">
+          <h4>Order Summary:</h4>
+          <div id="slip-items"></div>
+          <div class="slip-row slip-total">
+            <span>Total:</span>
+            <span id="slip-total-price" style="color: var(--primary-color);">$0.00</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; text-align: center;">
+          <p style="font-size: 0.85rem; color: var(--primary-color); font-weight: bold;">Please show this receipt when collecting your items.</p>
         </div>
       </div>
 
-      <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; text-align: center;">
-        <p style="font-size: 0.85rem; color: var(--primary-color); font-weight: bold;">Please show this receipt when collecting your items.</p>
+      <div style="display: flex; gap: 8px; margin-top: 15px;">
+        <button onclick="saveCustomerSlipImage()" class="btn-order" style="flex: 1; background: #10b981;">💾 Save Receipt</button>
+        <button onclick="cancelCustomerOrder()" class="btn-order" style="flex: 1; background: #ef4444;">❌ Cancel Order</button>
       </div>
-
-      <button onclick="hideOrderSlip()" class="btn-order" style="width: 100%; margin-top: 15px;">Back to Menu</button>
+      <button onclick="hideOrderSlip()" class="btn-nav" style="width: 100%; margin-top: 10px;">Back to Menu</button>
     </div>
 
     <!-- Bottom Fixed Cart Bar -->
@@ -78,7 +87,10 @@
         <p id="cart-count-text" style="font-size: 0.8rem; color: var(--text-muted);">0 Selected</p>
         <p id="cart-total-text" style="font-size: 1.2rem; font-weight: bold;"></p>
       </div>
-      <button onclick="submitOrder()" class="btn-order">Place Order</button>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="clearCart()" class="btn-nav" style="background: #ef4444; color: #fff;">Clear</button>
+        <button onclick="submitOrder()" class="btn-order">Place Order</button>
+      </div>
     </div>
   </main>
 
@@ -88,8 +100,24 @@
       <h2>Kitchen Live Orders</h2>
       <button onclick="logoutAdmin()" class="btn-add" style="background: #ef4444;">Exit Admin</button>
     </div>
+    
     <div id="admin-orders-container" class="admin-grid"></div>
+
+    <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border-color);">
+
+    <!-- Admin Stock Management -->
+    <h2>Product Inventory Management</h2>
+    <div id="admin-inventory-container" style="margin-top: 15px;"></div>
   </main>
+
+  <!-- Product Info Modal -->
+  <div id="product-info-modal" class="order-slip hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 250;">
+    <div class="slip-box" style="background: var(--bg-card); max-width: 320px; width: 100%; margin: 0; text-align: center;">
+      <h3 id="info-modal-title">Product Info</h3>
+      <p id="info-modal-desc" style="font-size: 0.9rem; color: var(--text-main); margin: 15px 0;"></p>
+      <button onclick="closeProductInfoModal()" class="btn-order" style="width: 100%;">Close</button>
+    </div>
+  </div>
 
   <!-- Secret Admin Password Modal -->
   <div id="admin-pass-modal" class="order-slip hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 200;">
@@ -105,7 +133,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script src="js/script.js?v=2"></script>
+  <script src="js/script.js?v=3"></script>
 </body>
 </html>

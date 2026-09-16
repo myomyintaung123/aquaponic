@@ -2,70 +2,67 @@ const MENU_DATA = [
   {
     category: "Fish Products",
     items: [
-      { id: 1, name: "Dory Patin (500g-600g)", price: 12, unit: "pc", image: "images/patin.jpg" },
-      { id: 2, name: "Dory Patin (700g-800g)", price: 18, unit: "pc", image: "images/patin.jpg" },
-      { id: 3, name: "Jade Perch (200g-300g)", price: 12, unit: "pc", image: "images/jade_perch.jpg" },
-      { id: 4, name: "Jade Perch (400g-480g)", price: 20, unit: "pc", image: "images/jade_perch.jpg" },
-      { id: 5, name: "Empurau (500g-700g)", price: 150, unit: "pc", image: "images/empurau.jpg" },
-      { id: 6, name: "Tilapia (400g-500g)", price: 10, unit: "pc", image: "images/tilapia.jpg" },
-      { id: 7, name: "Tilapia (Above 500g)", price: 12, unit: "pc", image: "images/tilapia.jpg" },
-      { id: 8, name: "Live Seawater Prawns (1kg)", price: 25, unit: "kg", image: "images/fresh_prawn.png" },
-      { id: 9, name: "Live Seawater Prawns (500g)", price: 15, unit: "kg", image: "images/fresh_prawn.png" }
+      { id: 1, name: "Dory Patin (500g-600g)", price: 12, unit: "pc", image: "images/patin.jpg", info: "Fresh aquaponic Dory Patin fish, rich in Omega-3.", available: true },
+      { id: 2, name: "Dory Patin (700g-800g)", price: 18, unit: "pc", image: "images/patin.jpg", info: "Larger sized fresh aquaponic Dory Patin.", available: true },
+      { id: 3, name: "Jade Perch (200g-300g)", price: 12, unit: "pc", image: "images/jade_perch.jpg", info: "High Omega-3 Jade Perch grown locally.", available: true },
+      { id: 4, name: "Jade Perch (400g-480g)", price: 20, unit: "pc", image: "images/jade_perch.jpg", info: "Premium size Jade Perch.", available: true },
+      { id: 5, name: "Empurau (500g-700g)", price: 150, unit: "pc", image: "images/empurau.jpg", info: "King of the river fish, rare and high grade.", available: true },
+      { id: 6, name: "Tilapia (400g-500g)", price: 10, unit: "pc", image: "images/tilapia.jpg", info: "Clean-tasting aquaponic Tilapia.", available: true },
+      { id: 7, name: "Tilapia (Above 500g)", price: 12, unit: "pc", image: "images/tilapia.jpg", info: "Large size aquaponic Tilapia.", available: true },
+      { id: 8, name: "Live Seawater Prawns (1kg)", price: 25, unit: "kg", image: "images/fresh_prawn.png", info: "Fresh seawater prawns.", available: true },
+      { id: 9, name: "Live Seawater Prawns (500g)", price: 15, unit: "kg", image: "images/fresh_prawn.png", info: "Fresh seawater prawns half kilo pack.", available: true }
     ]
   },
   {
     category: "Fresh Vegetables",
     promoText: "🎉 Buy Any 3 Vegetables for Only $10",
     items: [
-      { id: 10, name: "Brazilian Spinach (200g)", price: 4, unit: "pkt", image: "images/vege_5.png" },
-      { id: 11, name: "Aquacress (150g)", price: 3, unit: "pkt", image: "images/vege_2.png" },
-      { id: 12, name: "Nai Bai (250g)", price: 4, unit: "pkt", image: "images/vege_6.png" },
-      { id: 13, name: "Javanese Ginseng", price: 4, unit: "box", image: "images/ginseng.png" },
-      { id: 14, name: "Malabar Spinach", price: 3, unit: "pkt", image: "images/vege_3.png" },
-      { id: 15, name: "Sweet Potato Leaves (200g)", price: 2, unit: "bundle", image: "images/vege_1.png" },
-      { id: 16, name: "Sweet Potato Leaves (600g)", price: 5, unit: "bundle", image: "images/vege_1.png" }
+      { id: 10, name: "Brazilian Spinach (200g)", price: 4, unit: "pkt", image: "images/vege_5.png", info: "Organically grown crisp Brazilian Spinach.", available: true },
+      { id: 11, name: "Aquacress (150g)", price: 3, unit: "pkt", image: "images/vege_2.png", info: "Nutrient-dense aquaponic cress greens.", available: true },
+      { id: 12, name: "Nai Bai (250g)", price: 4, unit: "pkt", image: "images/vege_6.png", info: "Fresh, pesticide-free Nai Bai.", available: true },
+      { id: 13, name: "Javanese Ginseng", price: 4, unit: "box", image: "images/ginseng.png", info: "Fresh medicinal greens.", available: true },
+      { id: 14, name: "Malabar Spinach", price: 3, unit: "pkt", image: "images/vege_3.png", info: "Thick, succulent green spinach.", available: true },
+      { id: 15, name: "Sweet Potato Leaves (200g)", price: 2, unit: "bundle", image: "images/vege_1.png", info: "Tender sweet potato leaves.", available: true },
+      { id: 16, name: "Sweet Potato Leaves (600g)", price: 5, unit: "bundle", image: "images/vege_1.png", info: "Family pack sweet potato leaves.", available: true }
     ]
   },
   {
     category: "Food Products",
     items: [
-      { id: 17, name: "Brazilian Spinach Ice Cream (100g)", price: 3, unit: "cup", image: "images/ice-cream.png", promo: "Buy 5, Get 1 Free" },
-      { id: 18, name: "Farm Fresh Pandan Juice (350ml)", price: 3, unit: "bot", image: "images/pandan-juice.png", promo: "Buy 5, Get 1 Free" },
-      { id: 19, name: "Pong Pong Fish (300g)", price: 12, unit: "pkt", image: "images/pong_2.png", promo: "Buy 3, Get 1 Free" },
-      { id: 20, name: "Chewy Prawn Balls (300g)", price: 18, unit: "pkt", image: "images/chewy.png", promo: "Buy 2, Get 1 Veggie Free" },
-      { id: 21, name: "Namazu Kabayaki (170g)", price: 10, unit: "pkt", image: "images/kabayaki.png" }
+      { id: 17, name: "Brazilian Spinach Ice Cream (100g)", price: 3, unit: "cup", image: "images/ice-cream.png", promo: "Buy 5, Get 1 Free", info: "Unique healthy vegetable ice cream dessert.", available: true },
+      { id: 18, name: "Farm Fresh Pandan Juice (350ml)", price: 3, unit: "bot", image: "images/pandan-juice.png", promo: "Buy 5, Get 1 Free", info: "100% natural aromatic Pandan juice.", available: true },
+      { id: 19, name: "Pong Pong Fish (300g)", price: 12, unit: "pkt", image: "images/pong_2.png", promo: "Buy 3, Get 1 Free", info: "Crispy delicious fish snack.", available: true },
+      { id: 20, name: "Chewy Prawn Balls (300g)", price: 18, unit: "pkt", image: "images/chewy.png", promo: "Buy 2, Get 1 Veggie Free", info: "Handmade fresh prawn balls.", available: true },
+      { id: 21, name: "Namazu Kabayaki (170g)", price: 10, unit: "pkt", image: "images/kabayaki.png", info: "Japanese style grilled fish packet.", available: true }
     ]
   }
 ];
 
-// ================= SUPABASE INITIALIZATION =================
+// Supabase Initialization
 const SUPABASE_URL = 'https://nrhtomcijqvymzbbzsid.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yaHRvbWNpanF2eW16YmJ6c2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTY0OTYsImV4cCI6MjEwNTA3MjQ5Nn0.Ioqg3601HHG7c0nThsusRTF5ARy9aCnhaU7jSvFF6N0'; // Make sure your full anon key is set here
-
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yaHRvbWNpanF2eW16YmJ6c2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTY0OTYsImV4cCI6MjEwNTA3MjQ5Nn0.Ioqg3601HHG7c0nThsusRTF5ARy9aCnhaU7jSvFF6N0';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Local State
 let cart = {};
 let submittedOrders = [];
 let currentCustomerOrder = JSON.parse(localStorage.getItem('myo_current_customer_order')) || null;
+let stockStatus = JSON.parse(localStorage.getItem('myo_stock_status')) || {};
 
-// Admin Lock Auth
+// Admin Auth
 const ADMIN_PIN = "698946";
 let clickCount = 0;
 let clickTimer = null;
 
 function checkUrlForAdmin() {
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('admin') === 'true') {
-    enableAdminMode();
-  }
+  if (urlParams.get('admin') === 'true') enableAdminMode();
 }
 
 function handleLogoClick() {
   clickCount++;
   clearTimeout(clickTimer);
   clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
-
   if (clickCount >= 3) {
     clickCount = 0;
     document.getElementById('admin-pass-modal').classList.remove('hidden');
@@ -99,7 +96,6 @@ function logoutAdmin() {
   switchView('customer');
 }
 
-// Theme Switcher
 function toggleTheme() {
   const html = document.documentElement;
   const currentTheme = html.getAttribute('data-theme');
@@ -108,7 +104,7 @@ function toggleTheme() {
   document.getElementById('theme-btn').innerText = newTheme === 'light' ? '🌙' : '☀️';
 }
 
-// Render Menu
+// Render Customer Menu
 function renderMenu() {
   const container = document.getElementById('menu-container');
   container.innerHTML = '';
@@ -117,6 +113,10 @@ function renderMenu() {
     let section = document.createElement('div');
     section.className = 'menu-section';
     
+    let itemsToDisplay = cat.items.filter(item => stockStatus[item.id] !== false);
+
+    if (itemsToDisplay.length === 0) return;
+
     let html = `
       <h3 class="category-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
         <span>${cat.category}</span>
@@ -124,21 +124,22 @@ function renderMenu() {
       </h3>
     `;
     
-    cat.items.forEach(item => {
+    itemsToDisplay.forEach(item => {
       const qty = cart[item.id] || 0;
       html += `
-        <div class="item-card" style="display: flex; align-items: center; gap: 12px; padding: 10px; position: relative;">
-          <img src="${item.image}" alt="${item.name}" style="width: 65px; height: 65px; object-fit: cover; border-radius: 8px; flex-shrink: 0;" onerror="this.src='https://via.placeholder.com/65'">
-          <div style="flex: 1;">
-            <div class="item-name" style="font-weight: bold; font-size: 0.95rem;">${item.name}</div>
-            <div class="item-price" style="color: var(--primary-color); font-weight: 600; margin-top: 2px;">$${item.price} / ${item.unit}</div>
-            ${item.promo ? `<div style="display: inline-block; font-size: 0.7rem; background: #fef08a; color: #854d0e; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-top: 4px;">🏷️ ${item.promo}</div>` : ''}
+        <div class="item-card">
+          <img src="${item.image}" alt="${item.name}" class="item-img" onerror="this.src='https://via.placeholder.com/60'">
+          <div class="item-info">
+            <div class="item-name">${item.name}</div>
+            <div class="item-price">$${item.price} / ${item.unit}</div>
+            ${item.promo ? `<div class="item-promo">🏷️ ${item.promo}</div>` : ''}
           </div>
-          <div>
+          <div class="item-actions">
+            <button onclick="openProductInfo(${item.id})" class="btn-info" title="View details">ℹ️</button>
             ${qty > 0 ? `
               <div class="counter-box">
                 <button class="counter-btn" onclick="updateQty(${item.id}, -1)">-</button>
-                <span style="font-weight: bold; font-size: 0.9rem;">${qty}</span>
+                <span style="font-weight: bold; font-size: 0.85rem;">${qty}</span>
                 <button class="counter-btn" onclick="updateQty(${item.id}, 1)">+</button>
               </div>
             ` : `
@@ -157,14 +158,33 @@ function renderMenu() {
   checkCustomerActiveOrder();
 }
 
+// Product Info Modal Handlers
+function openProductInfo(id) {
+  let found = null;
+  MENU_DATA.forEach(cat => {
+    cat.items.forEach(i => { if (i.id === id) found = i; });
+  });
+  if (found) {
+    document.getElementById('info-modal-title').innerText = found.name;
+    document.getElementById('info-modal-desc').innerText = found.info || "Fresh quality guaranteed from Singa-Ponics.";
+    document.getElementById('product-info-modal').classList.remove('hidden');
+  }
+}
+
+function closeProductInfoModal() {
+  document.getElementById('product-info-modal').classList.add('hidden');
+}
+
 function updateQty(id, delta) {
   const current = cart[id] || 0;
   const updated = current + delta;
-  if (updated <= 0) {
-    delete cart[id];
-  } else {
-    cart[id] = updated;
-  }
+  if (updated <= 0) delete cart[id];
+  else cart[id] = updated;
+  renderMenu();
+}
+
+function clearCart() {
+  cart = {};
   renderMenu();
 }
 
@@ -172,9 +192,7 @@ function getCartItems() {
   let list = [];
   MENU_DATA.forEach(cat => {
     cat.items.forEach(item => {
-      if (cart[item.id]) {
-        list.push({ ...item, qty: cart[item.id] });
-      }
+      if (cart[item.id]) list.push({ ...item, qty: cart[item.id] });
     });
   });
   return list;
@@ -194,7 +212,7 @@ function updateCartBar() {
   }
 }
 
-// Order Submission to Supabase
+// Order Submission
 async function submitOrder() {
   const items = getCartItems();
   if (items.length === 0) return;
@@ -217,8 +235,7 @@ async function submitOrder() {
     paymentType: 'PayNow'
   };
 
-  // Push to Supabase Database
-  const { error } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from('orders')
     .insert([{
       order_id: newOrder.orderId,
@@ -230,23 +247,45 @@ async function submitOrder() {
       payment_type: newOrder.paymentType,
       discount: newOrder.discount,
       subtotal: newOrder.subtotal
-    }]);
+    }])
+    .select();
 
   if (error) {
-    console.error('Supabase Error:', error);
     alert('Error Detail: ' + error.message);
     return;
   }
 
+  if (data && data[0]) newOrder.id = data[0].id;
+
   currentCustomerOrder = newOrder;
   localStorage.setItem('myo_current_customer_order', JSON.stringify(currentCustomerOrder));
 
+  if (customerNameInput) customerNameInput.value = '';
   cart = {};
+
   showCurrentOrderSlip();
 }
 
+// Toggle order slip directly from notification bell
+function toggleNotificationSlip() {
+  if (!currentCustomerOrder) {
+    alert("No active order found.");
+    return;
+  }
+  
+  const modal = document.getElementById('order-slip-modal');
+  if (modal.classList.contains('hidden')) {
+    showCurrentOrderSlip();
+  } else {
+    hideOrderSlip();
+  }
+}
+
 function showCurrentOrderSlip() {
-  if (!currentCustomerOrder) return;
+  if (!currentCustomerOrder) {
+    alert("No active order found.");
+    return;
+  }
 
   document.getElementById('menu-container').classList.add('hidden');
   document.getElementById('cart-bar').classList.add('hidden');
@@ -254,8 +293,7 @@ function showCurrentOrderSlip() {
   document.getElementById('order-slip-modal').classList.remove('hidden');
 
   document.getElementById('slip-order-id').innerText = `Order #${currentCustomerOrder.orderId} • ${currentCustomerOrder.tableNo}`;
-  const slipCustomer = document.getElementById('slip-customer-name');
-  if (slipCustomer) slipCustomer.innerText = `Customer: ${currentCustomerOrder.customerName}`;
+  document.getElementById('slip-customer-name').innerText = `Customer: ${currentCustomerOrder.customerName}`;
   document.getElementById('slip-total-price').innerText = `$${currentCustomerOrder.total.toFixed(2)}`;
 
   const slipContainer = document.getElementById('slip-items');
@@ -270,6 +308,29 @@ function showCurrentOrderSlip() {
   });
 }
 
+function saveCustomerSlipImage() {
+  const element = document.getElementById('slip-content-to-capture');
+  html2canvas(element, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = `Slip_${currentCustomerOrder.orderId}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+async function cancelCustomerOrder() {
+  if (!currentCustomerOrder) return;
+
+  if (confirm("Are you sure you want to cancel this order?")) {
+    if (currentCustomerOrder.id) {
+      await supabaseClient.from('orders').delete().eq('id', currentCustomerOrder.id);
+    }
+    currentCustomerOrder = null;
+    localStorage.removeItem('myo_current_customer_order');
+    hideOrderSlip();
+  }
+}
+
 function hideOrderSlip() {
   document.getElementById('order-slip-modal').classList.add('hidden');
   document.getElementById('menu-container').classList.remove('hidden');
@@ -278,18 +339,16 @@ function hideOrderSlip() {
 
 function checkCustomerActiveOrder() {
   const banner = document.getElementById('active-order-banner');
+  const badge = document.getElementById('notif-badge');
+
   if (currentCustomerOrder) {
-    const isStillActive = submittedOrders.some(o => o.orderId === currentCustomerOrder.orderId);
-    if (isStillActive) {
-      banner.classList.remove('hidden');
-      document.getElementById('active-order-text').innerText = `Order #${currentCustomerOrder.orderId} is being prepared...`;
-    } else {
-      currentCustomerOrder = null;
-      localStorage.removeItem('myo_current_customer_order');
-      banner.classList.add('hidden');
-    }
+    banner.classList.remove('hidden');
+    badge.classList.remove('hidden');
+    badge.innerText = '1';
+    document.getElementById('active-order-text').innerText = `Order #${currentCustomerOrder.orderId} is being prepared...`;
   } else {
     banner.classList.add('hidden');
+    badge.classList.add('hidden');
   }
 }
 
@@ -311,10 +370,11 @@ function switchView(view) {
     btnA.classList.add('active');
     btnC.classList.remove('active');
     fetchAndRenderAdminOrders();
+    renderAdminInventory();
   }
 }
 
-// Fetch Orders from Supabase and Render Admin UI
+// Fetch & Render Admin Orders
 async function fetchAndRenderAdminOrders() {
   const { data, error } = await supabaseClient
     .from('orders')
@@ -344,7 +404,6 @@ async function fetchAndRenderAdminOrders() {
   checkCustomerActiveOrder();
 }
 
-// Render Admin Orders
 function renderAdminOrders() {
   const container = document.getElementById('admin-orders-container');
   document.getElementById('admin-count').innerText = submittedOrders.length;
@@ -355,7 +414,7 @@ function renderAdminOrders() {
   }
 
   container.innerHTML = '';
-  submittedOrders.forEach((order, idx) => {
+  submittedOrders.forEach((order) => {
     let itemsHtml = order.items.map(i => `
       <div class="slip-row">
         <span>${i.name} <b>x${i.qty}</b></span>
@@ -423,7 +482,36 @@ function renderAdminOrders() {
   });
 }
 
-// Dynamic updates
+// Admin Stock Control Render
+// Admin Stock Control Render
+function renderAdminInventory() {
+  const container = document.getElementById('admin-inventory-container');
+  container.innerHTML = '';
+
+  MENU_DATA.forEach(cat => {
+    let html = `<h4 style="margin: 10px 0; color: var(--primary-color);">${cat.category}</h4>`;
+    cat.items.forEach(item => {
+      const isAvailable = stockStatus[item.id] !== false;
+      html += `
+        <div class="item-card" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; margin-bottom: 6px; gap: 8px;">
+          <span style="font-size: 0.88rem; font-weight: 500;">${item.name}</span>
+          <button onclick="toggleItemStock(${item.id})" class="btn-stock-toggle" style="background: ${isAvailable ? '#10b981' : '#ef4444'}; color: #fff;">
+            ${isAvailable ? 'In Stock (On)' : 'Out of Stock (Off)'}
+          </button>
+        </div>
+      `;
+    });
+    container.innerHTML += html;
+  });
+}
+
+function toggleItemStock(id) {
+  stockStatus[id] = stockStatus[id] === false ? true : false;
+  localStorage.setItem('myo_stock_status', JSON.stringify(stockStatus));
+  renderAdminInventory();
+  renderMenu();
+}
+
 async function updateOrderDetails(orderId) {
   const order = submittedOrders.find(o => o.orderId === orderId);
   if (order) {
@@ -440,7 +528,6 @@ async function updateOrderDetails(orderId) {
     const totalElement = document.getElementById(`final-total-${orderId}`);
     if (totalElement) totalElement.innerText = `$${order.total.toFixed(2)}`;
 
-    // Update in Supabase
     await supabaseClient
       .from('orders')
       .update({
@@ -453,7 +540,6 @@ async function updateOrderDetails(orderId) {
   }
 }
 
-// Receipt Image Download & Remove from Supabase
 function receivedAndSave(orderId, dbId) {
   updateOrderDetails(orderId);
   const cardElement = document.getElementById(`order-card-${orderId}`);
@@ -461,11 +547,7 @@ function receivedAndSave(orderId, dbId) {
 
   if (actionButtons) actionButtons.style.display = 'none';
 
-  html2canvas(cardElement, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: '#ffffff'
-  }).then(async canvas => {
+  html2canvas(cardElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(async canvas => {
     const link = document.createElement('a');
     link.download = `Receipt_${orderId}.png`;
     link.href = canvas.toDataURL('image/png');
@@ -481,7 +563,6 @@ async function completeOrder(dbId) {
   fetchAndRenderAdminOrders();
 }
 
-// Supabase Realtime Listener setup
 function listenForRealtimeOrders() {
   supabaseClient
     .channel('public:orders')
@@ -491,7 +572,6 @@ function listenForRealtimeOrders() {
     .subscribe();
 }
 
-// App Initialization
 document.addEventListener('DOMContentLoaded', () => {
   checkUrlForAdmin();
   renderMenu();
