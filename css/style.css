@@ -316,11 +316,15 @@ body {
   display: none !important;
 }
 
-netlifydrawer-element,
-[class*="netlify-badge"],
-#netlify-badge-container {
+/* Netlify elements အကုန်လုံးကို အတင်း ဖျောက်ရန် */
+netlify-drawer,
+#netlify-drawer-root,
+[class*="netlify"],
+iframe[src*="netlify"] {
   display: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Scaled Mobile Buttons & Bottom Bar (< 480px) */

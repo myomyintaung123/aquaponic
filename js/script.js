@@ -310,11 +310,26 @@ function showCurrentOrderSlip() {
 
 function saveCustomerSlipImage() {
   const element = document.getElementById('slip-content-to-capture');
+  
   html2canvas(element, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
-    const link = document.createElement('a');
-    link.download = `Slip_${currentCustomerOrder.orderId}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = `Slip_${currentCustomerOrder.orderId}.png`;
+      link.href = url;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Direct Download အလုပ်မလုပ်သော ဖုန်းများအတွက် Image ကို View ပေးခြင်း
+      setTimeout(() => {
+        const newWindow = window.open(url, '_blank');
+        if (!newWindow) {
+          alert("Receipt image generated! If download didn't start, please tap and hold the image to save.");
+        }
+      }, 500);
+    }, 'image/png');
   });
 }
 
@@ -548,13 +563,20 @@ function receivedAndSave(orderId, dbId) {
   if (actionButtons) actionButtons.style.display = 'none';
 
   html2canvas(cardElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(async canvas => {
-    const link = document.createElement('a');
-    link.download = `Receipt_${orderId}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    canvas.toBlob(async (blob) => {
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `Receipt_${orderId}.png`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
 
-    if (actionButtons) actionButtons.style.display = 'flex';
-    await completeOrder(dbId);
+      if (actionButtons) actionButtons.style.display = 'flex';
+      await completeOrder(dbId);
+    }, 'image/png');
   });
 }
 
