@@ -43,11 +43,11 @@ const SUPABASE_URL = 'https://nrhtomcijqvymzbbzsid.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yaHRvbWNpanF2eW16YmJ6c2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTY0OTYsImV4cCI6MjEwNTA3MjQ5Nn0.Ioqg3601HHG7c0nThsusRTF5ARy9aCnhaU7jSvFF6N0';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Local State
+// State
 let cart = {};
 let submittedOrders = [];
 let currentCustomerOrder = JSON.parse(localStorage.getItem('myo_current_customer_order')) || null;
-let stockStatus = JSON.parse(localStorage.getItem('myo_stock_status')) || {};
+let stockStatus = {};
 
 // Admin Auth
 const ADMIN_PIN = "698946";
@@ -104,9 +104,53 @@ function toggleTheme() {
   document.getElementById('theme-btn').innerText = newTheme === 'light' ? '🌙' : '☀️';
 }
 
+// Supabase Stock Inventory Functions
+async function fetchStockStatus() {
+  const { data, error } = await supabaseClient
+    .from('inventory')
+    .select('*');
+
+  if (!error && data) {
+    stockStatus = {};
+    data.forEach(row => {
+      stockStatus[row.item_id] = row.is_available;
+    });
+    renderMenu();
+    renderAdminInventory();
+  }
+}
+
+async function toggleItemStock(id) {
+  const currentStatus = stockStatus[id] !== false;
+  const newStatus = !currentStatus;
+
+  stockStatus[id] = newStatus;
+  renderAdminInventory();
+  renderMenu();
+
+  const { error } = await supabaseClient
+    .from('inventory')
+    .upsert({ item_id: id, is_available: newStatus });
+
+  if (error) {
+    console.error("Error updating stock status:", error);
+    alert("Stock update failed. Please check connection.");
+  }
+}
+
+function listenForRealtimeStock() {
+  supabaseClient
+    .channel('public:inventory')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'inventory' }, () => {
+      fetchStockStatus();
+    })
+    .subscribe();
+}
+
 // Render Customer Menu
 function renderMenu() {
   const container = document.getElementById('menu-container');
+  if (!container) return;
   container.innerHTML = '';
 
   MENU_DATA.forEach(cat => {
@@ -118,7 +162,7 @@ function renderMenu() {
     if (itemsToDisplay.length === 0) return;
 
     let html = `
-      <h3 class="category-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+      <h3 class="category-title" style="display: flex; justify-space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
         <span>${cat.category}</span>
         ${cat.promoText ? `<span style="font-size: 0.75rem; background: #fef08a; color: #854d0e; padding: 4px 8px; border-radius: 6px; font-weight: bold;">${cat.promoText}</span>` : ''}
       </h3>
@@ -158,7 +202,6 @@ function renderMenu() {
   checkCustomerActiveOrder();
 }
 
-// Product Info Modal Handlers
 function openProductInfo(id) {
   let found = null;
   MENU_DATA.forEach(cat => {
@@ -200,6 +243,7 @@ function getCartItems() {
 
 function updateCartBar() {
   const cartBar = document.getElementById('cart-bar');
+  if (!cartBar) return;
   const items = getCartItems();
   const total = items.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
@@ -266,7 +310,6 @@ async function submitOrder() {
   showCurrentOrderSlip();
 }
 
-// Toggle order slip directly from notification bell
 function toggleNotificationSlip() {
   if (!currentCustomerOrder) {
     alert("No active order found.");
@@ -322,7 +365,6 @@ function saveCustomerSlipImage() {
       link.click();
       document.body.removeChild(link);
       
-      // Direct Download အလုပ်မလုပ်သော ဖုန်းများအတွက် Image ကို View ပေးခြင်း
       setTimeout(() => {
         const newWindow = window.open(url, '_blank');
         if (!newWindow) {
@@ -355,6 +397,7 @@ function hideOrderSlip() {
 function checkCustomerActiveOrder() {
   const banner = document.getElementById('active-order-banner');
   const badge = document.getElementById('notif-badge');
+  if (!banner || !badge) return;
 
   if (currentCustomerOrder) {
     banner.classList.remove('hidden');
@@ -421,6 +464,7 @@ async function fetchAndRenderAdminOrders() {
 
 function renderAdminOrders() {
   const container = document.getElementById('admin-orders-container');
+  if (!container) return;
   document.getElementById('admin-count').innerText = submittedOrders.length;
 
   if (submittedOrders.length === 0) {
@@ -497,10 +541,9 @@ function renderAdminOrders() {
   });
 }
 
-// Admin Stock Control Render
-// Admin Stock Control Render
 function renderAdminInventory() {
   const container = document.getElementById('admin-inventory-container');
+  if (!container) return;
   container.innerHTML = '';
 
   MENU_DATA.forEach(cat => {
@@ -518,13 +561,6 @@ function renderAdminInventory() {
     });
     container.innerHTML += html;
   });
-}
-
-function toggleItemStock(id) {
-  stockStatus[id] = stockStatus[id] === false ? true : false;
-  localStorage.setItem('myo_stock_status', JSON.stringify(stockStatus));
-  renderAdminInventory();
-  renderMenu();
 }
 
 async function updateOrderDetails(orderId) {
@@ -594,9 +630,11 @@ function listenForRealtimeOrders() {
     .subscribe();
 }
 
+// Single DOMContentLoaded Initialization
 document.addEventListener('DOMContentLoaded', () => {
   checkUrlForAdmin();
-  renderMenu();
+  fetchStockStatus();
   fetchAndRenderAdminOrders();
   listenForRealtimeOrders();
+  listenForRealtimeStock();
 });
