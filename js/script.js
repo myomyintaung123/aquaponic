@@ -38,8 +38,15 @@ const MENU_DATA = [
   }
 ];
 
+// ================= SUPABASE INITIALIZATION =================
+const SUPABASE_URL = 'https://nrhtomcijqvymzbbzsid.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_EF5Y5lyow2T2qeriQYNxGw_LXzKE...'; // Publishable Key ထည့်ပါ
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Local State
 let cart = {};
-let submittedOrders = JSON.parse(localStorage.getItem('myo_orders')) || [];
+let submittedOrders = [];
 let currentCustomerOrder = JSON.parse(localStorage.getItem('myo_current_customer_order')) || null;
 
 // Admin Lock Auth
@@ -101,7 +108,7 @@ function toggleTheme() {
   document.getElementById('theme-btn').innerText = newTheme === 'light' ? '🌙' : '☀️';
 }
 
-// Render Menu with Images & Promotion Badges
+// Render Menu
 function renderMenu() {
   const container = document.getElementById('menu-container');
   container.innerHTML = '';
@@ -187,8 +194,8 @@ function updateCartBar() {
   }
 }
 
-// Order Submission
-function submitOrder() {
+// Order Submission to Supabase
+async function submitOrder() {
   const items = getCartItems();
   if (items.length === 0) return;
 
@@ -210,10 +217,28 @@ function submitOrder() {
     paymentType: 'PayNow'
   };
 
-  submittedOrders.unshift(newOrder);
-  currentCustomerOrder = newOrder;
+  // Push to Supabase Database
+  const { error } = await supabaseClient
+    .from('orders')
+    .insert([{
+      order_id: newOrder.orderId,
+      customer_name: newOrder.customerName,
+      table_number: newOrder.tableNo,
+      items: newOrder.items,
+      total_price: newOrder.total,
+      payment_status: newOrder.paymentStatus,
+      payment_type: newOrder.paymentType,
+      discount: newOrder.discount,
+      subtotal: newOrder.subtotal
+    }]);
 
-  localStorage.setItem('myo_orders', JSON.stringify(submittedOrders));
+  if (error) {
+    console.error('Supabase Error:', error);
+    alert('Order ပို့မရပါ။ အင်တာနက် လိုင်းစစ်ပေးပါ။');
+    return;
+  }
+
+  currentCustomerOrder = newOrder;
   localStorage.setItem('myo_current_customer_order', JSON.stringify(currentCustomerOrder));
 
   cart = {};
@@ -285,11 +310,41 @@ function switchView(view) {
     adminView.classList.remove('hidden');
     btnA.classList.add('active');
     btnC.classList.remove('active');
-    renderAdminOrders();
+    fetchAndRenderAdminOrders();
   }
 }
 
-// Render Admin Orders with Discount input & Dynamic total
+// Supabase မှ Order များကို ရယူပြီး Admin UI တွင် ဖော်ပြခြင်း
+async function fetchAndRenderAdminOrders() {
+  const { data, error } = await supabaseClient
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Fetch error:', error);
+    return;
+  }
+
+  submittedOrders = data.map(o => ({
+    id: o.id,
+    orderId: o.order_id || `ORD-${o.id}`,
+    customerName: o.customer_name || 'Guest',
+    tableNo: o.table_number || 'Table 05',
+    time: new Date(o.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    items: o.items || [],
+    subtotal: o.subtotal || o.total_price,
+    discount: o.discount || 0,
+    total: o.total_price,
+    paymentStatus: o.payment_status || 'Unpaid',
+    paymentType: o.payment_type || 'PayNow'
+  }));
+
+  renderAdminOrders();
+  checkCustomerActiveOrder();
+}
+
+// Render Admin Orders
 function renderAdminOrders() {
   const container = document.getElementById('admin-orders-container');
   document.getElementById('admin-count').innerText = submittedOrders.length;
@@ -337,7 +392,6 @@ function renderAdminOrders() {
             <span id="final-total-${order.orderId}" style="color: var(--primary-color);">$${order.total.toFixed(2)}</span>
           </div>
 
-          <!-- Admin Controls: Payment Status & Dropdown -->
           <div style="display: flex; gap: 8px; margin-bottom: 8px;">
             <div style="flex: 1;">
               <label style="font-size: 0.75rem; color: var(--text-muted); display: block;">Payment Status:</label>
@@ -362,15 +416,15 @@ function renderAdminOrders() {
         </div>
 
         <div class="action-buttons-group" style="display: flex; gap: 8px; margin-top: 8px;">
-          <button class="btn-order" onclick="receivedAndSave('${order.orderId}', ${idx})" style="width: 100%; padding: 10px; background: #10b981; color: white;">💾 Received & Save Receipt</button>
+          <button class="btn-order" onclick="receivedAndSave('${order.orderId}', ${order.id})" style="width: 100%; padding: 10px; background: #10b981; color: white;">💾 Received & Save Receipt</button>
         </div>
       </div>
     `;
   });
 }
 
-// Update payment details and calculations dynamically
-function updateOrderDetails(orderId) {
+// Dynamic updates
+async function updateOrderDetails(orderId) {
   const order = submittedOrders.find(o => o.orderId === orderId);
   if (order) {
     const discountInput = document.getElementById(`discount-${orderId}`);
@@ -386,12 +440,21 @@ function updateOrderDetails(orderId) {
     const totalElement = document.getElementById(`final-total-${orderId}`);
     if (totalElement) totalElement.innerText = `$${order.total.toFixed(2)}`;
 
-    localStorage.setItem('myo_orders', JSON.stringify(submittedOrders));
+    // Update in Supabase
+    await supabaseClient
+      .from('orders')
+      .update({
+        discount: order.discount,
+        total_price: order.total,
+        payment_status: order.paymentStatus,
+        payment_type: order.paymentType
+      })
+      .eq('id', order.id);
   }
 }
 
-// Save Receipt Image & Complete Order
-function receivedAndSave(orderId, index) {
+// Receipt Image Download & Remove from Supabase
+function receivedAndSave(orderId, dbId) {
   updateOrderDetails(orderId);
   const cardElement = document.getElementById(`order-card-${orderId}`);
   const actionButtons = cardElement.querySelector('.action-buttons-group');
@@ -402,23 +465,36 @@ function receivedAndSave(orderId, index) {
     scale: 2,
     useCORS: true,
     backgroundColor: '#ffffff'
-  }).then(canvas => {
+  }).then(async canvas => {
     const link = document.createElement('a');
     link.download = `Receipt_${orderId}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
 
     if (actionButtons) actionButtons.style.display = 'flex';
-    completeOrder(index);
+    await completeOrder(dbId);
   });
 }
 
-function completeOrder(index) {
-  submittedOrders.splice(index, 1);
-  localStorage.setItem('myo_orders', JSON.stringify(submittedOrders));
-  renderAdminOrders();
+async function completeOrder(dbId) {
+  await supabaseClient.from('orders').delete().eq('id', dbId);
+  fetchAndRenderAdminOrders();
 }
 
-// Initial Run
-checkUrlForAdmin();
-renderMenu();
+// Supabase Realtime Listener setup
+function listenForRealtimeOrders() {
+  supabaseClient
+    .channel('public:orders')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+      fetchAndRenderAdminOrders();
+    })
+    .subscribe();
+}
+
+// App Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  checkUrlForAdmin();
+  renderMenu();
+  fetchAndRenderAdminOrders();
+  listenForRealtimeOrders();
+});
