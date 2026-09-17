@@ -115,11 +115,15 @@
     <div class="slip-box" style="background: var(--bg-card); max-width: 320px; width: 100%; margin: 0; text-align: center;">
       <h3>Admin Access</h3>
       <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Enter Admin PIN code</p>
-      <input type="password" id="admin-pin-input" placeholder="PIN" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; margin-bottom: 12px;">
-      <div style="display: flex; gap: 8px;">
-        <button onclick="closeAdminPassModal()" class="btn-nav" style="flex: 1;">Cancel</button>
-        <button onclick="verifyAdminPin()" class="btn-order" style="flex: 1; padding: 8px;">Login</button>
-      </div>
+      
+      <!-- Wrapped inside a form -->
+      <form onsubmit="event.preventDefault(); verifyAdminPin();">
+        <input type="password" id="admin-pin-input" autocomplete="current-password" placeholder="PIN" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; margin-bottom: 12px;">
+        <div style="display: flex; gap: 8px;">
+          <button type="button" onclick="closeAdminPassModal()" class="btn-nav" style="flex: 1;">Cancel</button>
+          <button type="submit" class="btn-order" style="flex: 1; padding: 8px;">Login</button>
+        </div>
+      </form>
     </div>
   </div>
 

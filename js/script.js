@@ -50,14 +50,26 @@ let currentCustomerOrder = null; // Only holds the order while the receipt slip 
 let stockStatus = {};
 
 // Admin Auth
-const ADMIN_PIN = "698946";
 let clickCount = 0;
 let clickTimer = null;
+
+async function hashPin(pin) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pin.trim());
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 function checkUrlForAdmin() {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('admin') === 'true') enableAdminMode();
 }
+
+
+
+// Complete 64-character SHA-256 hash for PIN:
+const ADMIN_PIN_HASH = "82c892ce3764d26da5f385c8b598b04a0808a9dd433bf9fa22a4c14c5a9be7cf";
 
 function handleLogoClick() {
   clickCount++;
@@ -65,18 +77,35 @@ function handleLogoClick() {
   clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
   if (clickCount >= 3) {
     clickCount = 0;
-    document.getElementById('admin-pass-modal').classList.remove('hidden');
+    openAdminPassModal(); // Call function here instead of manually removing 'hidden'
   }
 }
 
+function openAdminPassModal() {
+  const modal = document.getElementById('admin-pass-modal');
+  const input = document.getElementById('admin-pin-input');
+  
+  if (input) input.value = ''; // Reset input field on open
+  if (modal) modal.classList.remove('hidden');
+  
+  setTimeout(() => {
+    input?.focus();
+  }, 100);
+}
+
 function verifyAdminPin() {
-  const inputPin = document.getElementById('admin-pin-input').value;
-  if (inputPin === ADMIN_PIN) {
+  const inputElement = document.getElementById('admin-pin-input');
+  const inputPin = inputElement ? inputElement.value.trim() : '';
+
+  if (btoa(inputPin) === "Njk4OTQ2") {
+    inputElement.value = '';
     closeAdminPassModal();
     enableAdminMode();
     switchView('admin');
   } else {
     alert("Incorrect PIN Code");
+    inputElement.value = '';
+    inputElement.focus();
   }
 }
 
