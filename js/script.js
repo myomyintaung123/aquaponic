@@ -494,7 +494,12 @@ function renderAdminOrders() {
 
           <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 6px;">
             <span>Discount ($):</span>
-            <input type="number" id="discount-${order.orderId}" value="${order.discount || 0}" min="0" onchange="updateOrderDetails('${order.orderId}')" style="width: 70px; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); text-align: right;">
+            <input type="number" 
+                  id="discount-${order.orderId}" 
+                  value="${order.discount || 0}" 
+                  min="0" 
+                  onchange="updateOrderDetails('${order.orderId}')" 
+                  style="width: 70px; height: 28px; padding: 0 6px; line-height: 28px; border-radius: 4px; border: 1px solid var(--border-color); text-align: right; box-sizing: border-box; background: var(--bg-card); color: var(--text-main);">
           </div>
 
           <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.05rem; margin-bottom: 8px; border-top: 1px dashed var(--border-color); padding-top: 6px;">
