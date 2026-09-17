@@ -2,37 +2,37 @@ const MENU_DATA = [
   {
     category: "Fish Products",
     items: [
-      { id: 1, name: "Dory Patin (500g-600g)", price: 12, unit: "pc", image: "images/patin.jpg", info: "Fresh aquaponic Dory Patin fish, rich in Omega-3.", available: true },
-      { id: 2, name: "Dory Patin (700g-800g)", price: 18, unit: "pc", image: "images/patin.jpg", info: "Larger sized fresh aquaponic Dory Patin.", available: true },
+      { id: 1, name: "Dory Patin (500g-600g)", price: 12, unit: "pc", image: "images/patin.jpg", info: "Fresh aquaponic Dory Patin fish, naturally mild in flavor with a smooth, tender texture.", available: true },
+      { id: 2, name: "Dory Patin (700g-800g)", price: 18, unit: "pc", image: "images/patin.jpg", info: "Fresh aquaponic Dory Patin fish, naturally mild in flavor with a smooth, tender texture.", available: true },
       { id: 3, name: "Jade Perch (200g-300g)", price: 12, unit: "pc", image: "images/jade_perch.jpg", info: "High Omega-3 Jade Perch grown locally.", available: true },
-      { id: 4, name: "Jade Perch (400g-480g)", price: 20, unit: "pc", image: "images/jade_perch.jpg", info: "Premium size Jade Perch.", available: true },
+      { id: 4, name: "Jade Perch (400g-480g)", price: 20, unit: "pc", image: "images/jade_perch.jpg", info: "High Omega-3 Jade Perch grown locally.", available: true },
       { id: 5, name: "Empurau (500g-700g)", price: 150, unit: "pc", image: "images/empurau.jpg", info: "King of the river fish, rare and high grade.", available: true },
       { id: 6, name: "Tilapia (400g-500g)", price: 10, unit: "pc", image: "images/tilapia.jpg", info: "Clean-tasting aquaponic Tilapia.", available: true },
-      { id: 7, name: "Tilapia (Above 500g)", price: 12, unit: "pc", image: "images/tilapia.jpg", info: "Large size aquaponic Tilapia.", available: true },
-      { id: 8, name: "Live Seawater Prawns (1kg)", price: 25, unit: "kg", image: "images/fresh_prawn.png", info: "Fresh seawater prawns.", available: true },
-      { id: 9, name: "Live Seawater Prawns (500g)", price: 15, unit: "kg", image: "images/fresh_prawn.png", info: "Fresh seawater prawns half kilo pack.", available: true }
+      { id: 7, name: "Tilapia (Above 500g)", price: 12, unit: "pc", image: "images/tilapia.jpg", info: "Clean-tasting aquaponic Tilapia.", available: true },
+      { id: 8, name: "Live Seawater Prawns (1kg)", price: 25, unit: "kg", image: "images/fresh_prawn.png", info: "SG Live Vannamei Prawns On Sale ! Fresh, Live, Detox Vannamei Prawns, taste the difference, you won't regret !", available: true },
+      { id: 9, name: "Live Seawater Prawns (500g)", price: 15, unit: "kg", image: "images/fresh_prawn.png", info: "SG Live Vannamei Prawns On Sale ! Fresh, Live, Detox Vannamei Prawns, taste the difference, you won't regret !", available: true }
     ]
   },
   {
     category: "Fresh Vegetables",
     promoText: "🎉 Buy Any 3 Vegetables for Only $10",
     items: [
-      { id: 10, name: "Brazilian Spinach (200g)", price: 4, unit: "pkt", image: "images/vege_5.png", info: "Organically grown crisp Brazilian Spinach.", available: true },
-      { id: 11, name: "Aquacress (150g)", price: 3, unit: "pkt", image: "images/vege_2.png", info: "Nutrient-dense aquaponic cress greens.", available: true },
-      { id: 12, name: "Nai Bai (250g)", price: 4, unit: "pkt", image: "images/vege_6.png", info: "Fresh, pesticide-free Nai Bai.", available: true },
-      { id: 13, name: "Javanese Ginseng", price: 4, unit: "box", image: "images/ginseng.png", info: "Fresh medicinal greens.", available: true },
-      { id: 14, name: "Malabar Spinach", price: 3, unit: "pkt", image: "images/vege_3.png", info: "Thick, succulent green spinach.", available: true },
-      { id: 15, name: "Sweet Potato Leaves (200g)", price: 2, unit: "bundle", image: "images/vege_1.png", info: "Tender sweet potato leaves.", available: true },
-      { id: 16, name: "Sweet Potato Leaves (600g)", price: 5, unit: "bundle", image: "images/vege_1.png", info: "Family pack sweet potato leaves.", available: true }
+      { id: 10, name: "Brazilian Spinach (200g)", price: 4, unit: "pkt", image: "images/vege_5.png", info: "Using our own in-house Aquaponics technique, these home-grown Special Brazil Spinach is guaranteed fresh and packed full of nutrients!", available: true },
+      { id: 11, name: "Aquacress (150g)", price: 3, unit: "pkt", image: "images/vege_2.png", info: "Aquaponic  Hong Kong WaterCress with a mild taste of ginseng after cooking.", available: true },
+      { id: 12, name: "Nai Bai (250g)", price: 4, unit: "pkt", image: "images/vege_6.png", info: "Using our own in-house Aquaponics technique, these home-grown Special Nai Bai is guaranteed fresh and packed on each order delivery day ! Taste the Crispy fresh of our locally Aquaponic farmed vegetables, you will want more !", available: true },
+      { id: 13, name: "Javanese Ginseng", price: 4, unit: "box", image: "images/ginseng.png", info: "Sustainably grown aquaponic Javanese Ginseng. Packed with antioxidants and beneficial plant compounds to support vitality and relaxation.", available: true },
+      { id: 14, name: "Malabar Spinach", price: 3, unit: "pkt", image: "images/vege_3.png", info: "Fresh aquaponic greens traditionally used for energy.", available: true },
+      { id: 15, name: "Sweet Potato Leaves (200g)", price: 2, unit: "bundle", image: "images/vege_1.png", info: "Freshly farmed Sweet Potato Leaves.", available: true },
+      { id: 16, name: "Sweet Potato Leaves (600g)", price: 5, unit: "bundle", image: "images/vege_1.png", info: "Freshly farmed Sweet Potato Leaves.", available: true }
     ]
   },
   {
     category: "Food Products",
     items: [
-      { id: 17, name: "Brazilian Spinach Ice Cream (100g)", price: 3, unit: "cup", image: "images/ice-cream.png", promo: "Buy 5, Get 1 Free", info: "Unique healthy vegetable ice cream dessert.", available: true },
-      { id: 18, name: "Farm Fresh Pandan Juice (350ml)", price: 3, unit: "bot", image: "images/pandan-juice.png", promo: "Buy 5, Get 1 Free", info: "100% natural aromatic Pandan juice.", available: true },
-      { id: 19, name: "Pong Pong Fish (300g)", price: 12, unit: "pkt", image: "images/pong_2.png", promo: "Buy 3, Get 1 Free", info: "Crispy delicious fish snack.", available: true },
-      { id: 20, name: "Chewy Prawn Balls (300g)", price: 18, unit: "pkt", image: "images/chewy.png", promo: "Buy 2, Get 1 Veggie Free", info: "Handmade fresh prawn balls.", available: true },
+      { id: 17, name: "Brazilian Spinach Ice Cream (100g)", price: 3, unit: "cup", image: "images/ice-cream.png", promo: "Buy 5, Get 1 Free", info: "A special innovative from our farm fresh vegetables. Less sugar and healthy taste. Nippon SG Spinach Ice Cream is our first Innovated dessert from our farm fresh with no pesticide vegetables.", available: true },
+      { id: 18, name: "Farm Fresh Pandan Juice (350ml)", price: 3, unit: "bot", image: "images/pandan-juice.png", promo: "Buy 5, Get 1 Free", info: "Nippon SG Pandan Juice is a fresh, pesticide-free pandan extract crafted using Nippon SG’s sustainable aquaponic system—grown without chemicals, antibiotics, or harmful runoff—offering a clean, eco-friendly beverage bursting with natural pandan aroma and flavor.", available: true },
+      { id: 19, name: "Pong Pong Fish (300g)", price: 12, unit: "pkt", image: "images/pong_2.png", promo: "Buy 3, Get 1 Free", info: "Special Pong Pong Fish Bites - a delectable dish crafted with care. These irresistible fish bites are made with 100% real fish, meticulously farmed in our commercial size aquaponic technologies without any chemicals or growth hormones. The Star of this fish bites is the Namasu fish, a delightful white-fleshed variety known by its mild taste. Each fish bites is lovingly coated in our specially blended batter, ensuring a succulent burst of flavour when cooked to perfection.", available: true },
+      { id: 20, name: "Chewy Prawn Balls (300g)", price: 18, unit: "pkt", image: "images/chewy.png", promo: "Buy 2, Get 1 Veggie Free", info: "Nippon SG Chewy Prawnies are hand-made, delectable prawn balls crafted with a commitment to sustainability. Made from 98% real prawns, they are cultivated using advanced Urban Seawater Farming and Aquaponic technologies, ensuring a fresh and flavorful product. Each prawn undergoes a thorough detoxification process and is raised without growth hormones, guaranteeing quality and safety. The unique chewy texture comes from the special batter that coats each ball, resulting in a succulent burst of flavor when cooked to perfection. Enjoy the taste of quality and responsible sourcing with every bite!", available: true },
       { id: 21, name: "Namazu Kabayaki (170g)", price: 10, unit: "pkt", image: "images/kabayaki.png", info: "Japanese style grilled fish packet.", available: true }
     ]
   }
