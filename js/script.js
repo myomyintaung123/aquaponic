@@ -46,7 +46,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // State
 let cart = {};
 let submittedOrders = [];
-let currentCustomerOrder = JSON.parse(localStorage.getItem('myo_current_customer_order')) || null;
+let currentCustomerOrder = null; // Only holds the order while the receipt slip is open — not persisted
 let stockStatus = {};
 
 // Admin Auth
@@ -168,7 +168,7 @@ function renderMenu() {
     if (itemsToDisplay.length === 0) return;
 
     let html = `
-      <h3 class="category-title" style="display: flex; justify-space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+      <h3 class="category-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
         <span>${cat.category}</span>
         ${cat.promoText ? `<span style="font-size: 0.75rem; background: #fef08a; color: #854d0e; padding: 4px 8px; border-radius: 6px; font-weight: bold;">${cat.promoText}</span>` : ''}
       </h3>
@@ -205,7 +205,6 @@ function renderMenu() {
   });
 
   updateCartBar();
-  checkCustomerActiveOrder();
 }
 
 function openProductInfo(id) {
@@ -308,26 +307,11 @@ async function submitOrder() {
   if (data && data[0]) newOrder.id = data[0].id;
 
   currentCustomerOrder = newOrder;
-  localStorage.setItem('myo_current_customer_order', JSON.stringify(currentCustomerOrder));
 
   if (customerNameInput) customerNameInput.value = '';
   cart = {};
 
   showCurrentOrderSlip();
-}
-
-function toggleNotificationSlip() {
-  if (!currentCustomerOrder) {
-    alert("No active order found.");
-    return;
-  }
-  
-  const modal = document.getElementById('order-slip-modal');
-  if (modal.classList.contains('hidden')) {
-    showCurrentOrderSlip();
-  } else {
-    hideOrderSlip();
-  }
 }
 
 function showCurrentOrderSlip() {
@@ -338,7 +322,6 @@ function showCurrentOrderSlip() {
 
   document.getElementById('menu-container').classList.add('hidden');
   document.getElementById('cart-bar').classList.add('hidden');
-  document.getElementById('active-order-banner').classList.add('hidden');
   document.getElementById('order-slip-modal').classList.remove('hidden');
 
   document.getElementById('slip-order-id').innerText = `Order #${currentCustomerOrder.orderId} • ${currentCustomerOrder.tableNo}`;
@@ -377,43 +360,18 @@ function saveCustomerSlipImage() {
           alert("Receipt image generated! If download didn't start, please tap and hold the image to save.");
         }
       }, 500);
+
+      // Receipt is saved to the device now — clear the order and go back to the menu
+      currentCustomerOrder = null;
+      hideOrderSlip();
     }, 'image/png');
   });
-}
-
-async function cancelCustomerOrder() {
-  if (!currentCustomerOrder) return;
-
-  if (confirm("Are you sure you want to cancel this order?")) {
-    if (currentCustomerOrder.id) {
-      await supabaseClient.from('orders').delete().eq('id', currentCustomerOrder.id);
-    }
-    currentCustomerOrder = null;
-    localStorage.removeItem('myo_current_customer_order');
-    hideOrderSlip();
-  }
 }
 
 function hideOrderSlip() {
   document.getElementById('order-slip-modal').classList.add('hidden');
   document.getElementById('menu-container').classList.remove('hidden');
-  checkCustomerActiveOrder();
-}
-
-function checkCustomerActiveOrder() {
-  const banner = document.getElementById('active-order-banner');
-  const badge = document.getElementById('notif-badge');
-  if (!banner || !badge) return;
-
-  if (currentCustomerOrder) {
-    banner.classList.remove('hidden');
-    badge.classList.remove('hidden');
-    badge.innerText = '1';
-    document.getElementById('active-order-text').innerText = `Order #${currentCustomerOrder.orderId} is being prepared...`;
-  } else {
-    banner.classList.add('hidden');
-    badge.classList.add('hidden');
-  }
+  renderMenu(); // Refresh menu so quantity counters reset back to "+ Add"
 }
 
 function switchView(view) {
@@ -465,7 +423,6 @@ async function fetchAndRenderAdminOrders() {
   }));
 
   renderAdminOrders();
-  checkCustomerActiveOrder();
 }
 
 function renderAdminOrders() {

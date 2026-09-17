@@ -23,11 +23,6 @@
       style="cursor: pointer; height: 40px; width: auto; object-fit: contain;"
     />
     <div class="header-controls">
-      <!-- Notification Bell -->
-      <div class="notif-bell-container" onclick="toggleNotificationSlip()" style="position: relative; cursor: pointer; display: flex; align-items: center; padding: 4px;">
-        <span style="font-size: 1.2rem; pointer-events: none;">🔔</span>
-        <span id="notif-badge" class="notif-badge hidden">0</span>
-      </div>
       <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙</button>
       <button id="nav-customer" onclick="switchView('customer')" class="btn-nav hidden">Menu</button>
       <button id="nav-admin" onclick="switchView('admin')" class="btn-nav hidden">Admin (<span id="admin-count">0</span>)</button>
@@ -46,15 +41,6 @@
     <div style="margin-bottom: 15px; padding: 0 5px;">
       <label style="display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px;">Your Name:</label>
       <input type="text" id="customer-name-input" placeholder="Enter your name..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
-    </div>
-
-    <!-- Active Order Tracker Bar -->
-    <div id="active-order-banner" class="cart-bar hidden" style="position: relative; margin-bottom: 20px; background: var(--primary-light); color: var(--text-main); border: 1px solid var(--primary-color);">
-      <div>
-        <p style="font-size: 0.8rem; color: var(--primary-dark); font-weight: bold;">⏳ Active Order Status</p>
-        <p id="active-order-text" style="font-size: 0.95rem; font-weight: bold; color: var(--primary-color);">Preparing your order...</p>
-      </div>
-      <button onclick="showCurrentOrderSlip()" class="btn-add" style="background: var(--primary-color); color: #fff;">View Slip</button>
     </div>
 
     <!-- Menu Container -->
@@ -82,10 +68,8 @@
       </div>
 
       <div style="display: flex; gap: 8px; margin-top: 15px;">
-        <button onclick="saveCustomerSlipImage()" class="btn-order" style="flex: 1; background: #10b981;">💾 Save Receipt</button>
-        <button onclick="cancelCustomerOrder()" class="btn-order" style="flex: 1; background: #ef4444;">❌ Cancel Order</button>
+        <button onclick="saveCustomerSlipImage()" class="btn-order" style="width: 100%; background: #10b981;">💾 Save Receipt & Back to Menu</button>
       </div>
-      <button onclick="hideOrderSlip()" class="btn-nav" style="width: 100%; margin-top: 10px;">Back to Menu</button>
     </div>
 
     <!-- Bottom Fixed Cart Bar -->
@@ -140,6 +124,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/script.js?v=3"></script>
+  <script src="js/script.js?v=4"></script>
 </body>
 </html>
