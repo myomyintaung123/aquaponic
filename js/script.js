@@ -592,10 +592,27 @@ function receivedAndSave(orderId, dbId) {
   updateOrderDetails(orderId);
   const cardElement = document.getElementById(`order-card-${orderId}`);
   const actionButtons = cardElement.querySelector('.action-buttons-group');
-
+  const discountInput = document.getElementById(`discount-${orderId}`);
+  
   if (actionButtons) actionButtons.style.display = 'none';
 
+  // Temporarily replace input with a clean span for html2canvas capture
+  let tempSpan = null;
+  if (discountInput) {
+    tempSpan = document.createElement('span');
+    tempSpan.style.cssText = 'font-size: 0.85rem; font-weight: 500; min-width: 60px; text-align: right; display: inline-block; padding-right: 4px;';
+    tempSpan.innerText = `$${parseFloat(discountInput.value || 0).toFixed(2)}`;
+    discountInput.style.display = 'none';
+    discountInput.parentNode.appendChild(tempSpan);
+  }
+
   html2canvas(cardElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(async canvas => {
+    // Restore original input field
+    if (discountInput && tempSpan) {
+      tempSpan.remove();
+      discountInput.style.display = 'inline-block';
+    }
+
     canvas.toBlob(async (blob) => {
       if (blob) {
         const url = URL.createObjectURL(blob);
