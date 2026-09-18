@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js';
+const { createClient } = window.supabase
 
 // Local environment ဟုတ်မဟုတ် စစ်ဆေးခြင်း
 const IS_LOCAL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
