@@ -1,3 +1,5 @@
+import { createClient } from '@supabase/supabase-js';
+
 // Local environment ဟုတ်မဟုတ် စစ်ဆေးခြင်း
 const IS_LOCAL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
 
@@ -53,10 +55,12 @@ const MENU_DATA = [
   }
 ];
 
+
 // Supabase Initialization
-const SUPABASE_URL = 'https://nrhtomcijqvymzbbzsid.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yaHRvbWNpanF2eW16YmJ6c2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTY0OTYsImV4cCI6MjEwNTA3MjQ5Nn0.Ioqg3601HHG7c0nThsusRTF5ARy9aCnhaU7jSvFF6N0';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // State
 let cart = {};
@@ -697,3 +701,24 @@ document.addEventListener('DOMContentLoaded', () => {
   listenForRealtimeOrders();
   listenForRealtimeStock();
 });
+
+
+
+
+
+// Vite Module Scope မှ HTML onclick များ ခေါ်သုံးနိုင်အောင် window သို့ မိတ်ဆက်ပေးခြင်း
+window.updateQty = updateQty;
+window.openProductInfo = openProductInfo;
+window.closeProductInfoModal = closeProductInfoModal;
+window.submitOrder = submitOrder;
+window.toggleItemStock = toggleItemStock;
+window.handleLogoClick = handleLogoClick;
+window.verifyAdminPin = verifyAdminPin;
+window.closeAdminPassModal = closeAdminPassModal;
+window.logoutAdmin = logoutAdmin;
+window.toggleTheme = toggleTheme;
+window.switchView = switchView;
+window.updateOrderDetails = updateOrderDetails;
+window.receivedAndSave = receivedAndSave;
+window.saveCustomerSlipImage = saveCustomerSlipImage;
+window.hideOrderSlip = hideOrderSlip;
