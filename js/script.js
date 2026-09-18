@@ -1,3 +1,18 @@
+// Local environment ဟုတ်မဟုတ် စစ်ဆေးခြင်း
+const IS_LOCAL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+
+// Local တွင် စမ်းသပ်နေပါက ယခင်သိမ်းထားသော Stock Status ကို စတင်ချိန်၌ ပြန်ယူမည်
+if (IS_LOCAL && localStorage.getItem('local_stockStatus')) {
+  try {
+    stockStatus = JSON.parse(localStorage.getItem('local_stockStatus'));
+  } catch (e) {
+    console.error("Local stock data parse error", e);
+  }
+}
+
+
+
+
 const MENU_DATA = [
   {
     category: "Fish Products",
@@ -135,6 +150,19 @@ function toggleTheme() {
 
 // Supabase Stock Inventory Functions
 async function fetchStockStatus() {
+  // Local ဖြစ်ပါက LocalStorage မှ Data ကို ဦးစားပေး ယူမည်
+  if (IS_LOCAL && localStorage.getItem('local_stockStatus')) {
+    try {
+      stockStatus = JSON.parse(localStorage.getItem('local_stockStatus'));
+    } catch (e) {
+      console.error("Local stock data parse error", e);
+    }
+    renderMenu();
+    renderAdminInventory();
+    return;
+  }
+
+  // Live Netlify site ဖြစ်ပါက Supabase မှ Data ဆွဲယူမည်
   try {
     const { data, error } = await supabaseClient
       .from('inventory')
@@ -149,11 +177,11 @@ async function fetchStockStatus() {
   } catch (err) {
     console.error("Failed to sync stock:", err);
   } finally {
-    // Always render menu after fetch completes so phone gets fresh stock data
     renderMenu();
     renderAdminInventory();
   }
 }
+
 
 async function toggleItemStock(id) {
   const currentStatus = stockStatus[id] !== false;
@@ -163,6 +191,13 @@ async function toggleItemStock(id) {
   renderAdminInventory();
   renderMenu();
 
+  // 1. Local environment (127.0.0.1 / localhost) ဖြစ်ပါက LocalStorage ထဲသာ သိမ်းမည် (Supabase DB မထိပါ)
+  if (IS_LOCAL) {
+    localStorage.setItem('local_stockStatus', JSON.stringify(stockStatus));
+    return;
+  }
+
+  // 2. Live Netlify site ဖြစ်ပါက Supabase Database ထဲသို့ Update လုပ်မည်
   const { error } = await supabaseClient
     .from('inventory')
     .upsert({ item_id: id, is_available: newStatus });
