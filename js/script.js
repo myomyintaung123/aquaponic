@@ -1,5 +1,3 @@
-import { createClient } from '@supabase/supabase-js'
-
 // Vite env variables or static fallbacks
 const SUPABASE_URL = import.meta.env?.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL';
 const SUPABASE_KEY = import.meta.env?.VITE_SUPABASE_KEY || 'YOUR_SUPABASE_ANON_KEY';
