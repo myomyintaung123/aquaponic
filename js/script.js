@@ -182,6 +182,7 @@ function listenForRealtimeStock() {
     .subscribe();
 }
 
+
 // Render Customer Menu
 function renderMenu() {
   const container = document.getElementById('menu-container');
@@ -192,9 +193,8 @@ function renderMenu() {
     let section = document.createElement('div');
     section.className = 'menu-section';
     
-    let itemsToDisplay = cat.items.filter(item => stockStatus[item.id] !== false);
-
-    if (itemsToDisplay.length === 0) return;
+    // Category ထဲမှာ item တစ်ခုမှ မရှိမှသာ ကျော်မည် (stock ကြောင့် မဟုတ်ဘဲ array အလွတ်ဖြစ်နေလျှင်)
+    if (!cat.items || cat.items.length === 0) return;
 
     let html = `
       <h3 class="category-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
@@ -203,19 +203,29 @@ function renderMenu() {
       </h3>
     `;
     
-    itemsToDisplay.forEach(item => {
+    cat.items.forEach(item => {
       const qty = cart[item.id] || 0;
+      // stockStatus ထဲမှာ false မဟုတ်ရင် stock ရှိသည်ဟု ယူဆမည်
+      const isAvailable = stockStatus[item.id] !== false;
+
       html += `
-        <div class="item-card">
+        <div class="item-card ${!isAvailable ? 'out-of-stock-card' : ''}">
           <img src="${item.image}" alt="${item.name}" class="item-img" onerror="this.src='https://via.placeholder.com/60'">
           <div class="item-info">
             <div class="item-name">${item.name}</div>
             <div class="item-price">$${item.price} / ${item.unit}</div>
-            ${item.promo ? `<div class="item-promo">🏷️ ${item.promo}</div>` : ''}
+            
+            ${!isAvailable 
+              ? `<div style="color: #e63946; font-weight: bold; font-size: 0.75rem; margin-top: 2px;">Currently Out of Stock</div>` 
+              : (item.promo ? `<div class="item-promo">🏷️ ${item.promo}</div>` : '')
+            }
           </div>
           <div class="item-actions">
             <button onclick="openProductInfo(${item.id})" class="btn-info" title="View details">ℹ️</button>
-            ${qty > 0 ? `
+            
+            ${!isAvailable ? `
+              <button class="btn-add" disabled style="background: #ccc; cursor: not-allowed; opacity: 0.6;">+ Add</button>
+            ` : (qty > 0 ? `
               <div class="counter-box">
                 <button class="counter-btn" onclick="updateQty(${item.id}, -1)">-</button>
                 <span style="font-weight: bold; font-size: 0.85rem;">${qty}</span>
@@ -223,7 +233,7 @@ function renderMenu() {
               </div>
             ` : `
               <button class="btn-add" onclick="updateQty(${item.id}, 1)">+ Add</button>
-            `}
+            `)}
           </div>
         </div>
       `;
