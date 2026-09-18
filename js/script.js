@@ -679,11 +679,13 @@ document.addEventListener('DOMContentLoaded', () => {
   listenForRealtimeStock();
 });
 
-// Window Exports for HTML Event Handlers
+
+// Export functions to window for HTML inline event handlers (onclick, onsubmit, etc.)
 window.updateQty = updateQty;
 window.openProductInfo = openProductInfo;
 window.closeProductInfoModal = closeProductInfoModal;
 window.submitOrder = submitOrder;
+window.clearCart = clearCart;
 window.toggleItemStock = toggleItemStock;
 window.handleLogoClick = handleLogoClick;
 window.verifyAdminPin = verifyAdminPin;
