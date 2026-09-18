@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/variable.css">
   <link rel="stylesheet" href="css/style.css">
 
+  <!-- Supabase JS Client Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- HTML to Image Library -->
@@ -25,7 +26,7 @@
       style="cursor: pointer; height: 40px; width: auto; object-fit: contain;"
     />
     <div class="header-controls">
-      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙</button>
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" aria-label="Toggle Theme">🌙</button>
       <button id="nav-customer" onclick="switchView('customer')" class="btn-nav hidden">Menu</button>
       <button id="nav-admin" onclick="switchView('admin')" class="btn-nav hidden">Admin (<span id="admin-count">0</span>)</button>
     </div>
@@ -41,7 +42,7 @@
 
     <!-- Customer Name Input -->
     <div style="margin-bottom: 15px; padding: 0 5px;">
-      <label style="display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px;">Your Name:</label>
+      <label for="customer-name-input" style="display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px;">Your Name:</label>
       <input type="text" id="customer-name-input" placeholder="Enter your name..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);">
     </div>
 
@@ -49,28 +50,30 @@
     <div id="menu-container"></div>
 
     <!-- Order Summary Slip Modal -->
-    <div id="order-slip-modal" class="order-slip hidden">
-      <div id="slip-content-to-capture" style="background: var(--bg-card); padding: 15px; border-radius: 12px;">
-        <h3 style="color: var(--primary-color);">✓ Order Confirmed</h3>
-        <p id="slip-order-id" style="color: var(--text-muted); font-size: 0.85rem;"></p>
-        <p id="slip-customer-name" style="font-weight: bold; font-size: 0.9rem; margin-top: 4px;"></p>
-        
-        <div class="slip-box">
-          <h4>Order Summary:</h4>
-          <div id="slip-items"></div>
-          <div class="slip-row slip-total">
-            <span>Total:</span>
-            <span id="slip-total-price" style="color: var(--primary-color);">$0.00</span>
+    <div id="order-slip-modal" class="modal-overlay hidden">
+      <div class="order-slip">
+        <div id="slip-content-to-capture" style="background: var(--bg-card); padding: 15px; border-radius: 12px;">
+          <h3 style="color: var(--primary-color);">✓ Order Confirmed</h3>
+          <p id="slip-order-id" style="color: var(--text-muted); font-size: 0.85rem;"></p>
+          <p id="slip-customer-name" style="font-weight: bold; font-size: 0.9rem; margin-top: 4px;"></p>
+          
+          <div class="slip-box">
+            <h4>Order Summary:</h4>
+            <div id="slip-items"></div>
+            <div class="slip-row slip-total">
+              <span>Total:</span>
+              <span id="slip-total-price" style="color: var(--primary-color);">$0.00</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; text-align: center;">
+            <p style="font-size: 0.85rem; color: var(--primary-color); font-weight: bold;">Please show this receipt when collecting your items.</p>
           </div>
         </div>
 
-        <div style="margin-top: 15px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; text-align: center;">
-          <p style="font-size: 0.85rem; color: var(--primary-color); font-weight: bold;">Please show this receipt when collecting your items.</p>
+        <div style="display: flex; gap: 8px; margin-top: 15px;">
+          <button onclick="saveCustomerSlipImage()" class="btn-order" style="width: 100%; background: #10b981;">💾 Save Receipt & Back to Menu</button>
         </div>
-      </div>
-
-      <div style="display: flex; gap: 8px; margin-top: 15px;">
-        <button onclick="saveCustomerSlipImage()" class="btn-order" style="width: 100%; background: #10b981;">💾 Save Receipt & Back to Menu</button>
       </div>
     </div>
 
@@ -104,7 +107,7 @@
   </main>
 
   <!-- Product Info Modal -->
-  <div id="product-info-modal" class="order-slip hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 250;">
+  <div id="product-info-modal" class="modal-overlay hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 250;">
     <div class="slip-box" style="background: var(--bg-card); max-width: 320px; width: 100%; margin: 0; text-align: center;">
       <h3 id="info-modal-title">Product Info</h3>
       <p id="info-modal-desc" style="font-size: 0.9rem; color: var(--text-main); margin: 15px 0;"></p>
@@ -113,7 +116,7 @@
   </div>
 
   <!-- Secret Admin Password Modal -->
-  <div id="admin-pass-modal" class="order-slip hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 200;">
+  <div id="admin-pass-modal" class="modal-overlay hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 200;">
     <div class="slip-box" style="background: var(--bg-card); max-width: 320px; width: 100%; margin: 0; text-align: center;">
       <h3>Admin Access</h3>
       <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Enter Admin PIN code</p>
@@ -129,7 +132,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- JavaScript Modules -->
   <script type="module" src="js/script.js?v=4"></script>
 </body>
 </html>

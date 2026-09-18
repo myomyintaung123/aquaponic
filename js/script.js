@@ -1,10 +1,25 @@
-// import { createClient } from '@supabase/supabase-js';
-const { createClient } = window.supabase
+import { createClient } from '@supabase/supabase-js'
 
-// Local environment ဟုတ်မဟုတ် စစ်ဆေးခြင်း
+// Vite env variables
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+// State Declarations
+let cart = {};
+let submittedOrders = [];
+let currentCustomerOrder = null;
+let stockStatus = {};
+
+// Admin Auth
+let clickCount = 0;
+let clickTimer = null;
+const ADMIN_PIN_HASH = "82c892ce3764d26da5f385c8b598b04a0808a9dd433bf9fa22a4c14c5a9be7cf";
+
+// Local environment check
 const IS_LOCAL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
 
-// Local တွင် စမ်းသပ်နေပါက ယခင်သိမ်းထားသော Stock Status ကို စတင်ချိန်၌ ပြန်ယူမည်
 if (IS_LOCAL && localStorage.getItem('local_stockStatus')) {
   try {
     stockStatus = JSON.parse(localStorage.getItem('local_stockStatus'));
@@ -12,9 +27,6 @@ if (IS_LOCAL && localStorage.getItem('local_stockStatus')) {
     console.error("Local stock data parse error", e);
   }
 }
-
-
-
 
 const MENU_DATA = [
   {
@@ -36,7 +48,7 @@ const MENU_DATA = [
     promoText: "🎉 Buy Any 3 Vegetables for Only $10",
     items: [
       { id: 10, name: "Brazilian Spinach (200g)", price: 4, unit: "pkt", image: "images/vege_5.png", info: "Using our own in-house Aquaponics technique, these home-grown Special Brazil Spinach is guaranteed fresh and packed full of nutrients!", available: true },
-      { id: 11, name: "Aquacress (150g)", price: 3, unit: "pkt", image: "images/vege_2.png", info: "Aquaponic  Hong Kong WaterCress with a mild taste of ginseng after cooking.", available: true },
+      { id: 11, name: "Aquacress (150g)", price: 3, unit: "pkt", image: "images/vege_2.png", info: "Aquaponic Hong Kong WaterCress with a mild taste of ginseng after cooking.", available: true },
       { id: 12, name: "Nai Bai (250g)", price: 4, unit: "pkt", image: "images/vege_6.png", info: "Using our own in-house Aquaponics technique, these home-grown Special Nai Bai is guaranteed fresh and packed on each order delivery day ! Taste the Crispy fresh of our locally Aquaponic farmed vegetables, you will want more !", available: true },
       { id: 13, name: "Javanese Ginseng", price: 4, unit: "box", image: "images/ginseng.png", info: "Sustainably grown aquaponic Javanese Ginseng. Packed with antioxidants and beneficial plant compounds to support vitality and relaxation.", available: true },
       { id: 14, name: "Malabar Spinach", price: 3, unit: "pkt", image: "images/vege_3.png", info: "Fresh aquaponic greens traditionally used for energy.", available: true },
@@ -49,29 +61,12 @@ const MENU_DATA = [
     items: [
       { id: 17, name: "Brazilian Spinach Ice Cream (100g)", price: 3, unit: "cup", image: "images/ice-cream.png", promo: "Buy 5, Get 1 Free", info: "A special innovative from our farm fresh vegetables. Less sugar and healthy taste. Nippon SG Spinach Ice Cream is our first Innovated dessert from our farm fresh with no pesticide vegetables.", available: true },
       { id: 18, name: "Farm Fresh Pandan Juice (350ml)", price: 3, unit: "bot", image: "images/pandan-juice.png", promo: "Buy 5, Get 1 Free", info: "Nippon SG Pandan Juice is a fresh, pesticide-free pandan extract crafted using Nippon SG’s sustainable aquaponic system—grown without chemicals, antibiotics, or harmful runoff—offering a clean, eco-friendly beverage bursting with natural pandan aroma and flavor.", available: true },
-      { id: 19, name: "Pong Pong Fish (300g)", price: 12, unit: "pkt", image: "images/pong_2.png", promo: "Buy 3, Get 1 Free", info: "Special Pong Pong Fish Bites - a delectable dish crafted with care. These irresistible fish bites are made with 100% real fish, meticulously farmed in our commercial size aquaponic technologies without any chemicals or growth hormones. The Star of this fish bites is the Namasu fish, a delightful white-fleshed variety known by its mild taste. Each fish bites is lovingly coated in our specially blended batter, ensuring a succulent burst of flavour when cooked to perfection.", available: true },
-      { id: 20, name: "Chewy Prawn Balls (300g)", price: 18, unit: "pkt", image: "images/chewy.png", promo: "Buy 2, Get 1 Veggie Free", info: "Nippon SG Chewy Prawnies are hand-made, delectable prawn balls crafted with a commitment to sustainability. Made from 98% real prawns, they are cultivated using advanced Urban Seawater Farming and Aquaponic technologies, ensuring a fresh and flavorful product. Each prawn undergoes a thorough detoxification process and is raised without growth hormones, guaranteeing quality and safety. The unique chewy texture comes from the special batter that coats each ball, resulting in a succulent burst of flavor when cooked to perfection. Enjoy the taste of quality and responsible sourcing with every bite!", available: true },
+      { id: 19, name: "Pong Pong Fish (300g)", price: 12, unit: "pkt", image: "images/pong_2.png", promo: "Buy 3, Get 1 Free", info: "Special Pong Pong Fish Bites - a delectable dish crafted with care. These irresistible fish bites are made with 100% real fish, meticulously farmed in our commercial size aquaponic technologies without any chemicals or growth hormones.", available: true },
+      { id: 20, name: "Chewy Prawn Balls (300g)", price: 18, unit: "pkt", image: "images/chewy.png", promo: "Buy 2, Get 1 Veggie Free", info: "Nippon SG Chewy Prawnies are hand-made, delectable prawn balls crafted with a commitment to sustainability.", available: true },
       { id: 21, name: "Namazu Kabayaki (170g)", price: 10, unit: "pkt", image: "images/kabayaki.png", info: "Japanese style grilled fish packet.", available: true }
     ]
   }
 ];
-
-
-// Supabase Initialization
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
-
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// State
-let cart = {};
-let submittedOrders = [];
-let currentCustomerOrder = null; // Only holds the order while the receipt slip is open — not persisted
-let stockStatus = {};
-
-// Admin Auth
-let clickCount = 0;
-let clickTimer = null;
 
 async function hashPin(pin) {
   const encoder = new TextEncoder();
@@ -86,18 +81,13 @@ function checkUrlForAdmin() {
   if (urlParams.get('admin') === 'true') enableAdminMode();
 }
 
-
-
-// Complete 64-character SHA-256 hash for PIN:
-const ADMIN_PIN_HASH = "82c892ce3764d26da5f385c8b598b04a0808a9dd433bf9fa22a4c14c5a9be7cf";
-
 function handleLogoClick() {
   clickCount++;
   clearTimeout(clickTimer);
   clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
   if (clickCount >= 3) {
     clickCount = 0;
-    openAdminPassModal(); // Call function here instead of manually removing 'hidden'
+    openAdminPassModal();
   }
 }
 
@@ -105,27 +95,28 @@ function openAdminPassModal() {
   const modal = document.getElementById('admin-pass-modal');
   const input = document.getElementById('admin-pin-input');
   
-  if (input) input.value = ''; // Reset input field on open
+  if (input) input.value = '';
   if (modal) modal.classList.remove('hidden');
   
-  setTimeout(() => {
-    input?.focus();
-  }, 100);
+  setTimeout(() => { input?.focus(); }, 100);
 }
 
-function verifyAdminPin() {
+async function verifyAdminPin() {
   const inputElement = document.getElementById('admin-pin-input');
   const inputPin = inputElement ? inputElement.value.trim() : '';
+  const hashedInput = await hashPin(inputPin);
 
-  if (btoa(inputPin) === "Njk4OTQ2") {
-    inputElement.value = '';
+  if (hashedInput === ADMIN_PIN_HASH || inputPin === "698946") {
+    if (inputElement) inputElement.value = '';
     closeAdminPassModal();
     enableAdminMode();
     switchView('admin');
   } else {
     alert("Incorrect PIN Code");
-    inputElement.value = '';
-    inputElement.focus();
+    if (inputElement) {
+      inputElement.value = '';
+      inputElement.focus();
+    }
   }
 }
 
@@ -155,7 +146,6 @@ function toggleTheme() {
 
 // Supabase Stock Inventory Functions
 async function fetchStockStatus() {
-  // Local ဖြစ်ပါက LocalStorage မှ Data ကို ဦးစားပေး ယူမည်
   if (IS_LOCAL && localStorage.getItem('local_stockStatus')) {
     try {
       stockStatus = JSON.parse(localStorage.getItem('local_stockStatus'));
@@ -167,9 +157,8 @@ async function fetchStockStatus() {
     return;
   }
 
-  // Live Netlify site ဖြစ်ပါက Supabase မှ Data ဆွဲယူမည်
   try {
-    const { data, error } = await supabaseClient
+    const { data, error } = await supabase
       .from('inventory')
       .select('*');
 
@@ -187,7 +176,6 @@ async function fetchStockStatus() {
   }
 }
 
-
 async function toggleItemStock(id) {
   const currentStatus = stockStatus[id] !== false;
   const newStatus = !currentStatus;
@@ -196,14 +184,12 @@ async function toggleItemStock(id) {
   renderAdminInventory();
   renderMenu();
 
-  // 1. Local environment (127.0.0.1 / localhost) ဖြစ်ပါက LocalStorage ထဲသာ သိမ်းမည် (Supabase DB မထိပါ)
   if (IS_LOCAL) {
     localStorage.setItem('local_stockStatus', JSON.stringify(stockStatus));
     return;
   }
 
-  // 2. Live Netlify site ဖြစ်ပါက Supabase Database ထဲသို့ Update လုပ်မည်
-  const { error } = await supabaseClient
+  const { error } = await supabase
     .from('inventory')
     .upsert({ item_id: id, is_available: newStatus });
 
@@ -214,7 +200,7 @@ async function toggleItemStock(id) {
 }
 
 function listenForRealtimeStock() {
-  supabaseClient
+  supabase
     .channel('public:inventory')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'inventory' }, () => {
       fetchStockStatus();
@@ -222,8 +208,6 @@ function listenForRealtimeStock() {
     .subscribe();
 }
 
-
-// Render Customer Menu
 function renderMenu() {
   const container = document.getElementById('menu-container');
   if (!container) return;
@@ -233,7 +217,6 @@ function renderMenu() {
     let section = document.createElement('div');
     section.className = 'menu-section';
     
-    // Category ထဲမှာ item တစ်ခုမှ မရှိမှသာ ကျော်မည် (stock ကြောင့် မဟုတ်ဘဲ array အလွတ်ဖြစ်နေလျှင်)
     if (!cat.items || cat.items.length === 0) return;
 
     let html = `
@@ -245,7 +228,6 @@ function renderMenu() {
     
     cat.items.forEach(item => {
       const qty = cart[item.id] || 0;
-      // stockStatus ထဲမှာ false မဟုတ်ရင် stock ရှိသည်ဟု ယူဆမည်
       const isAvailable = stockStatus[item.id] !== false;
 
       html += `
@@ -293,7 +275,7 @@ function openProductInfo(id) {
   });
   if (found) {
     document.getElementById('info-modal-title').innerText = found.name;
-    document.getElementById('info-modal-desc').innerText = found.info || "Fresh quality guaranteed from Singa-Ponics.";
+    document.getElementById('info-modal-desc').innerText = found.info || "Fresh quality guaranteed.";
     document.getElementById('product-info-modal').classList.remove('hidden');
   }
 }
@@ -340,7 +322,6 @@ function updateCartBar() {
   }
 }
 
-// Order Submission
 async function submitOrder() {
   const items = getCartItems();
   if (items.length === 0) return;
@@ -363,7 +344,7 @@ async function submitOrder() {
     paymentType: 'PayNow'
   };
 
-  const { data, error } = await supabaseClient
+  const { data, error } = await supabase
     .from('orders')
     .insert([{
       order_id: newOrder.orderId,
@@ -386,7 +367,6 @@ async function submitOrder() {
   if (data && data[0]) newOrder.id = data[0].id;
 
   currentCustomerOrder = newOrder;
-
   if (customerNameInput) customerNameInput.value = '';
   cart = {};
 
@@ -440,7 +420,6 @@ function saveCustomerSlipImage() {
         }
       }, 500);
 
-      // Receipt is saved to the device now — clear the order and go back to the menu
       currentCustomerOrder = null;
       hideOrderSlip();
     }, 'image/png');
@@ -450,7 +429,7 @@ function saveCustomerSlipImage() {
 function hideOrderSlip() {
   document.getElementById('order-slip-modal').classList.add('hidden');
   document.getElementById('menu-container').classList.remove('hidden');
-  renderMenu(); // Refresh menu so quantity counters reset back to "+ Add"
+  renderMenu();
 }
 
 function switchView(view) {
@@ -475,9 +454,8 @@ function switchView(view) {
   }
 }
 
-// Fetch & Render Admin Orders
 async function fetchAndRenderAdminOrders() {
-  const { data, error } = await supabaseClient
+  const { data, error } = await supabase
     .from('orders')
     .select('*')
     .order('created_at', { ascending: false });
@@ -626,7 +604,7 @@ async function updateOrderDetails(orderId) {
     const totalElement = document.getElementById(`final-total-${orderId}`);
     if (totalElement) totalElement.innerText = `$${order.total.toFixed(2)}`;
 
-    await supabaseClient
+    await supabase
       .from('orders')
       .update({
         discount: order.discount,
@@ -646,7 +624,6 @@ function receivedAndSave(orderId, dbId) {
   
   if (actionButtons) actionButtons.style.display = 'none';
 
-  // Temporarily replace input with a clean span for html2canvas capture
   let tempSpan = null;
   if (discountInput) {
     tempSpan = document.createElement('span');
@@ -657,7 +634,6 @@ function receivedAndSave(orderId, dbId) {
   }
 
   html2canvas(cardElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(async canvas => {
-    // Restore original input field
     if (discountInput && tempSpan) {
       tempSpan.remove();
       discountInput.style.display = 'inline-block';
@@ -681,12 +657,12 @@ function receivedAndSave(orderId, dbId) {
 }
 
 async function completeOrder(dbId) {
-  await supabaseClient.from('orders').delete().eq('id', dbId);
+  await supabase.from('orders').delete().eq('id', dbId);
   fetchAndRenderAdminOrders();
 }
 
 function listenForRealtimeOrders() {
-  supabaseClient
+  supabase
     .channel('public:orders')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
       fetchAndRenderAdminOrders();
@@ -703,11 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
   listenForRealtimeStock();
 });
 
-
-
-
-
-// Vite Module Scope မှ HTML onclick များ ခေါ်သုံးနိုင်အောင် window သို့ မိတ်ဆက်ပေးခြင်း
+// Window Exports for HTML Event Handlers
 window.updateQty = updateQty;
 window.openProductInfo = openProductInfo;
 window.closeProductInfoModal = closeProductInfoModal;
