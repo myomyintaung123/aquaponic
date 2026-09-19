@@ -1,8 +1,17 @@
 // Vite env variables or static fallbacks
-const SUPABASE_URL = import.meta.env?.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY = import.meta.env?.VITE_SUPABASE_KEY || 'YOUR_SUPABASE_ANON_KEY';
+// const SUPABASE_URL = import.meta.env?.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL';
+// const SUPABASE_KEY = import.meta.env?.VITE_SUPABASE_KEY || 'YOUR_SUPABASE_ANON_KEY';
 
-// Use the CDN instance from window:
+// // Use the CDN instance from window:
+// const { createClient } = window.supabase;
+// const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+// Supabase credentials directly in JS file
+const SUPABASE_URL = 'https://nrhtomcijqvymzbbzsid.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yaHRvbWNpanF2eW16YmJ6c2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTY0OTYsImV4cCI6MjEwNTA3MjQ5Nn0.Ioqg3601HHG7c0nThsusRTF5ARy9aCnhaU7jSvFF6N0';
+
+// Window Supabase CDN Instance ကို သုံးမည်
 const { createClient } = window.supabase;
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
